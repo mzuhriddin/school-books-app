@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ApiResponse {
+public class ApiResponse<T> {
     private String message;
     private boolean success;
-    private Object object;
+    private T object;
 
     public ApiResponse(String message, Boolean success) {
         this.message = message;

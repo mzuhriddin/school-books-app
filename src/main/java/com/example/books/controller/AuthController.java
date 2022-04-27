@@ -43,12 +43,7 @@ public record AuthController(AuthService authService, JwtProvider jwtProvider,
         if (byUsername.isPresent()) {
             return ResponseEntity.status(400).body("This username already exist");
         }
-        userRepository.save(User.builder()
-                .password(passwordEncoder.encode(registerDto.getPassword()))
-                .username(registerDto.getUsername())
-                .phoneNumber(registerDto.getPhoneNumber())
-                .role(Role.USER)
-                .build());
+        userRepository.save(User.builder().password(passwordEncoder.encode(registerDto.getPassword())).username(registerDto.getUsername()).phoneNumber(registerDto.getPhoneNumber()).role(Role.USER).build());
         return ResponseEntity.ok("Successfully registered.\nGo to login page.");
     }
 }

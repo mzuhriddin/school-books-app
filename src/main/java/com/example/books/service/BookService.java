@@ -4,36 +4,82 @@ import com.example.books.dto.ApiResponse;
 import com.example.books.dto.BookDto;
 import com.example.books.entity.Book;
 import com.example.books.entity.User;
+import com.example.books.mapper.BookMapper;
 import com.example.books.repository.BookRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public record BookService(BookRepository bookRepository) {
-    public ApiResponse add(BookDto bookDto) {
-        bookRepository.save(Book.builder()
-                .data(bookDto.getData())
-                .name(bookDto.getName())
-                .aClass(bookDto.getAClass())
-                .language(bookDto.getLanguage())
-                .build());
-        return ApiResponse.builder().message("ADDED").success(true).build();
+@RequiredArgsConstructor
+public class BookService {
+    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
+
+    public ApiResponse add(BookDto dto) {
+        if (dto.getFile().isEmpty() || dto.getPicture().isEmpty()) {
+            return ApiResponse.builder()
+                    .success(false)
+                    .message("File or picture of book must not be empty")
+                    .build();
+        }
+        if (!Objects.requireNonNull(dto.getFile().getOriginalFilename()).matches("^(.+)\\.(pdf|epub|word|fb2)$")) {
+            return ApiResponse.builder()
+                    .success(false)
+                    .message("File type must be pdf, epub, word, fb2, txt")
+                    .build();
+        }
+        if (!Objects.requireNonNull(dto.getPicture().getOriginalFilename()).matches("^(.+)\\.(png|jpeg|ico|jpg)$")) {
+            return ApiResponse.builder()
+                    .message("File type must be png, jpeg, ico, jpg")
+                    .build();
+        }
+        Book book = bookMapper.toEntity(dto);
+        bookRepository.save(book);
+        return ApiResponse.builder()
+                .success(true)
+                .message("Created!")
+                .build();
     }
 
-    public ApiResponse edit(Integer id, BookDto bookDto) {
-        Optional<Book> byId = bookRepository.findById(id);
-        if (byId.isPresent()) {
-            Book book = byId.get();
-            book.setAClass(bookDto.getAClass());
-            book.setData(bookDto.getData());
-            book.setLanguage(bookDto.getLanguage());
-            book.setName(bookDto.getName());
-            bookRepository.save(book);
-            return ApiResponse.builder().success(true).message("EDITED").build();
+    @SneakyThrows
+    public ApiResponse edit(Integer id, BookDto dto) {
+        Optional<Book> optionalBook = bookRepository.findById(id);
+        if (optionalBook.isEmpty()) {
+            return ApiResponse.builder()
+                    .success(false)
+                    .message("Book not found")
+                    .build();
         }
-        return ApiResponse.builder().message("NOT FOUND").success(false).build();
+        Book book = optionalBook.get();
+        if (dto.getFile().isEmpty() || dto.getPicture().isEmpty()) {
+            return ApiResponse.builder()
+                    .success(false)
+                    .message("File or picture of book must not be empty")
+                    .build();
+        }
+        if (!Objects.requireNonNull(dto.getFile().getOriginalFilename()).matches("^(.+)\\.(pdf|epub|word|fb2)$")) {
+            return ApiResponse.builder()
+                    .success(false)
+                    .message("File type must be pdf, epub, word, fb2, txt")
+                    .build();
+        }
+        if (!Objects.requireNonNull(dto.getPicture().getOriginalFilename()).matches("^(.+)\\.(png|jpeg|ico|jpg)$")) {
+            return ApiResponse.builder()
+                    .success(false)
+                    .message("File type must be png, jpeg, ico, jpg")
+                    .build();
+        }
+        bookMapper.update(dto, book);
+        bookRepository.save(book);
+        return ApiResponse.builder()
+                .success(true)
+                .message("Edited!")
+                .build();
     }
 
     public ApiResponse delete(Integer id) {

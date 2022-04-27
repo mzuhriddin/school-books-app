@@ -1,6 +1,5 @@
 package com.example.books.dto;
 
-import com.example.books.entity.enums.Language;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,11 +19,11 @@ public class BookDto {
     @NotBlank
     private String name;
     @NotNull
-    private Integer groupId;
+    private int group;
     @Size(min = 1)
     private List<String> authors;
     @NotNull
-    private Language language;
+    private String language;
     @NotNull
     private MultipartFile file, picture;
 }

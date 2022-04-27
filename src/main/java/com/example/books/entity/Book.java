@@ -1,6 +1,6 @@
 package com.example.books.entity;
 
-import com.example.books.entity.enums.Class;
+import com.example.books.entity.enums.Group;
 import com.example.books.entity.enums.Language;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +33,7 @@ public class Book {
 
     @OneToOne
     @JoinColumn(nullable = false)
-    private Attachment photo;
+    private Attachment picture;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -41,5 +41,5 @@ public class Book {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Class aClass;
+    private Group groupNum;
 }
