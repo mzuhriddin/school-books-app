@@ -1,6 +1,9 @@
 server:
   port: 80
 spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
   mvc:
     servlet:
       path: /api
@@ -15,10 +18,10 @@ spring:
     defer-datasource-initialization: true
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
   sql:
     init:
-      mode: always
+      mode: never
 jwt:
   secretKey: SupperKey
   expireTime: 864000000

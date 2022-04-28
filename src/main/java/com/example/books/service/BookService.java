@@ -11,6 +11,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,13 +28,13 @@ public class BookService {
                     .message("File or picture of book must not be empty")
                     .build();
         }
-        if (!Objects.requireNonNull(dto.getFile().getOriginalFilename()).matches("^(.+)\\.(pdf|epub|word|fb2)$")) {
+        if (!Objects.requireNonNull(dto.getFile().getOriginalFilename()).toLowerCase(Locale.ROOT).matches("^(.+)\\.(pdf|epub|word|fb2)$")) {
             return ApiResponse.builder()
                     .success(false)
                     .message("File type must be pdf, epub, word, fb2, txt")
                     .build();
         }
-        if (!Objects.requireNonNull(dto.getPicture().getOriginalFilename()).matches("^(.+)\\.(png|jpeg|ico|jpg)$")) {
+        if (!Objects.requireNonNull(dto.getPicture().getOriginalFilename()).toLowerCase(Locale.ROOT).matches("^(.+)\\.(png|jpeg|ico|jpg)$")) {
             return ApiResponse.builder()
                     .message("File type must be png, jpeg, ico, jpg")
                     .build();

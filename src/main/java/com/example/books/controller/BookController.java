@@ -41,7 +41,7 @@ public class BookController {
 
     @PreAuthorize("hasAuthority('BOOK_CRUD')")
     @PostMapping
-    public ResponseEntity add(@Valid @RequestBody BookDto bookDto) {
+    public ResponseEntity add(@Valid @ModelAttribute BookDto bookDto) {
         ApiResponse apiResponse = bookService.add(bookDto);
         return ResponseEntity.status(apiResponse.isSuccess() ? 200 : 400).body(apiResponse);
     }
@@ -62,7 +62,7 @@ public class BookController {
 
     @SneakyThrows
     @GetMapping("/allByClass")
-    public ResponseEntity findByClass(@RequestParam int classNumber) {
+    public ResponseEntity findByClass(@RequestParam("num") int classNumber) {
         return ResponseEntity.ok(bookRepository.findAllByGroupNum(Group.findByKey(classNumber)));
     }
 
@@ -79,8 +79,8 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity searchByName(@RequestParam String name) {
-        return ResponseEntity.ok(bookRepository.findAllByNameContainingIgnoreCase(name));
+    public ResponseEntity searchByName(@RequestParam("name") String name) {
+        return ResponseEntity.ok(bookRepository.searchBookByName(name));
     }
 
     @PreAuthorize("hasAnyAuthority('BOOK_CRUD','BOOKMARK')")
@@ -98,7 +98,7 @@ public class BookController {
     }
 
     @PreAuthorize("hasAnyAuthority('BOOK_CRUD','BOOKMARK')")
-    @GetMapping("/bookmarks")
+    @GetMapping("/bookmarks/")
     public ResponseEntity bookmarks(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(user.getBooks());
     }

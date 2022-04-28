@@ -21,7 +21,8 @@ public class JwtFilter extends OncePerRequestFilter {
     final AuthService authService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (!request.getRequestURI().startsWith("/api/auth/")) {
+        String requestURI = request.getRequestURI();
+        if (!requestURI.startsWith("/api/auth/") && !requestURI.startsWith("/api/book")) {
             String token = request.getHeader("Authorization");
             token = token.substring(7); //Bearer so'zini qirqib oldik
             if (jwtProvider.validateToken(token)) {

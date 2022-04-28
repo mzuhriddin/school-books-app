@@ -31,7 +31,7 @@ public class Book {
     @JoinColumn(nullable = false)
     private Attachment file;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(nullable = false)
     private Attachment picture;
 
